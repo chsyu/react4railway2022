@@ -11,9 +11,9 @@ export const getProductById = async (productId) => {
 export const getProducts = async (url) => {
   let data;
   // QUERY PRODUCTS
-  if (url === "/")
-    data = await axios.get(`${URL}/products`);
-  else
+  // if (url === "/")
+  //   data = await axios.get(`${URL}/products`);
+  // else
     data = await axios.get(`${URL}/products/${url}`);
 
   return data;

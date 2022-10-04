@@ -13,9 +13,9 @@ function Home() {
   const products = useSelector(selectProducts);
   const dispatch = useDispatch();
   const { categoryName } = useParams();
-  const url = categoryName || "/";
+  const url = categoryName || "";
 
-  const title = url === "/"
+  const title = url === ""
     ? "NORDIC NEST Shopping Cart"
     : products[0]?.category.toUpperCase();
 
