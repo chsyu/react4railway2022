@@ -1,24 +1,18 @@
 import { useState } from "react";
-import { Row, Col, Select, Spin } from "antd";
+import { Row, Col, Select, Skeleton } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import AddToCart from "./AddToCart"
 import { selectIsLoading } from "../redux/productsSlice";
 
 const { Option } = Select;
-const antIcon = <LoadingOutlined style={{ fontSize: 80, color: "#8183ff" }} spin />;
 
 function ProductDetail({ product }) {
    const [qty, setQty] = useState(product.countInStock > 0 ? 1 : 0);
    const isLoading = useSelector(selectIsLoading);
 
    return (
-      <>
-         {isLoading ? (
-            <div className="spinner-wrap">
-               <Spin indicator={antIcon} className="spinner" />
-            </div>
-         ) : (
+      <Skeleton loading={isLoading}>
             <Row gutter={[32, 32]}>
                <Col xs={{ span: 20, offset: 2 }} lg={{ span: 6, offset: 2 }}>
                   <img
@@ -65,8 +59,7 @@ function ProductDetail({ product }) {
                   </div>
                </Col>
             </Row>
-         )}
-      </>);
+      </Skeleton>);
 }
 
 export default ProductDetail;
