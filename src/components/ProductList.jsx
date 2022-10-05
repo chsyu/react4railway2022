@@ -11,7 +11,7 @@ export default function ProductList({ products }) {
   const isLoading = useSelector(selectIsLoading);
 
   return (
-    <Skeketon loading={isLoading}>
+    <Skeleton loading={isLoading}>
       <Row gutter={[32, 32]}>
         {products.map(product => (
           <Col
@@ -25,7 +25,7 @@ export default function ProductList({ products }) {
           </Col>
         ))}
       </Row>
-    </Skeketon>
+    </Skeleton>
   );
 }
 
