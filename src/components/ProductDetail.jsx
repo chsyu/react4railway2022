@@ -12,16 +12,18 @@ function ProductDetail({ product }) {
    const isLoading = useSelector(selectIsLoading);
 
    return (
-      <Skeleton loading={isLoading}>
-         <Row gutter={[32, 32]}>
-            <Col xs={{ span: 20, offset: 2 }} lg={{ span: 6, offset: 2 }}>
+      <Row gutter={[32, 32]}>
+         <Col xs={{ span: 20, offset: 2 }} lg={{ span: 6, offset: 2 }}>
+            <Skeleton loading={isLoading} active>
                <img
                   alt={product.name}
                   className="product-image"
                   src={product.image}
                />
-            </Col>
-            <Col xs={{ span: 20, offset: 2 }} lg={{ span: 14, offset: 0 }} >
+            </Skeleton>
+         </Col>
+         <Col xs={{ span: 20, offset: 2 }} lg={{ span: 14, offset: 0 }} >
+            <Skeleton loading={isLoading} active >
                <div className="product-info--detail">
                   <h2 className="product-category">
                      {product.category}
@@ -57,9 +59,10 @@ function ProductDetail({ product }) {
                      <AddToCart product={product} qty={qty} />
                   </div>
                </div>
-            </Col>
-         </Row>
-      </Skeleton>);
+            </Skeleton>
+         </Col>
+      </Row>
+   );
 }
 
 export default ProductDetail;

@@ -47,7 +47,7 @@ const productsSlice = createSlice({
       state.isLoading = true;
    })
    .addCase(getProductByIdAsync.fulfilled, (state, action) => {
-      state.isLoading = false;
+      state.isLoading = true;
       state.productContent = action.payload;
    })
  },
