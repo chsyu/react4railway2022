@@ -16,7 +16,7 @@ function Product() {
    const dispatch = useDispatch();
    const product = useSelector(selectProduct);
 
-   useEffect(() => {
+   useLayoutEffect(() => {
       dispatch(getProductByIdAsync(productId));
    }, [productId, dispatch])
 
