@@ -10,7 +10,10 @@ export default function UserInfo(props) {
    const navigate = useNavigate();
 
    const goToProfile = () => {
-      navigate("/auth/login?redirect=profile");
+      if (!userInfo)
+         navigate("/auth/login?redirect=/auth/profile");
+      else
+         navigate("/auth/profile");
    };
 
    useEffect(() => {

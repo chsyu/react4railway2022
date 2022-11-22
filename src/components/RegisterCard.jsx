@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from "react";
 import { Form, Input, Checkbox, Button } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
-import { register, selectIsLoading, selectError } from "../redux/usersSlice";
+import Cookie from "js-cookie"
+
+import { useRegisterWithEmailPassword } from "../react-query";
 
 const formItemLayout = {
   labelCol: {
@@ -37,17 +38,23 @@ const tailFormItemLayout = {
 };
 
 const RegisterCard = ({ redirect }) => {
-  const isLoading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
-  const dispatch = useDispatch();
+
+  const { mutate, error, isLoading, isError, isSuccess, data } = useRegisterWithEmailPassword();
+
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  const onFinish = async (values) => {
+  const onFinish = (values) => {
     console.log("Received values of form: ", values);
-    const user = await dispatch(register(values));
-    user && navigate(redirect);
+    mutate(values);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      Cookie.set("userInfo", JSON.stringify(data?.data));
+      navigate(redirect);
+    }
+  }, [isSuccess, redirect]); 
 
   return (
     <Form
@@ -166,8 +173,8 @@ const RegisterCard = ({ redirect }) => {
           </Button>
         )}
         Already have an account?{" "}
-        <Link to={"/login?redirect=shipping"}>Login</Link>
-        {!error ? (
+        <Link to={`/auth/login?redirect=${redirect}`}>Login</Link>
+        {!isError ? (
           <></>
         ) : (
           <div className="login-form__error-wrap">
@@ -175,7 +182,7 @@ const RegisterCard = ({ redirect }) => {
               <WarningOutlined className="site-form-item-icon" />
               {"  "}There was a problem
             </h3>
-            <p className="login-form__error-message">{error}</p>
+            <p className="login-form__error-message">{error.response.data?.detail}</p>
           </div>
         )}
       </Form.Item>

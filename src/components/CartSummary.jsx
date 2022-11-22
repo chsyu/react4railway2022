@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Badge } from "antd";
 import { useSelector } from "react-redux";
+import Cookie from "js-cookie"
+
 import { CartIcon } from "./Icons";
 import CartModal from "./CartModal";
 import { selectCartItems } from "../redux/cartSlice";
@@ -12,6 +14,11 @@ export default function CartSummary() {
   const count = (cartItems.length > 0) ?
   cartItems.reduce((sum, item) => sum + item.qty, 0)
   : 0;
+
+
+  useEffect(() => {
+    Cookie.set("cartItems", JSON.stringify(cartItems));
+  }, [cartItems])
 
   return (
     <>

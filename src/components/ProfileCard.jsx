@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Form, Input, Button } from "antd";
-import { logout, update, selectUserInfo } from "../redux/usersSlice";
+import { WarningOutlined } from '@ant-design/icons';
+import Cookie from "js-cookie"
+
+import { logout, selectUserInfo } from "../redux/usersSlice";
+import { useUpdateProfile } from "../react-query";
 
 const ProfileCard = () => {
+  const { mutate, error, isLoading, isError, isSuccess } = useUpdateProfile();
 
   const userInfo = useSelector(selectUserInfo);
   const { username, access_token, user_id } = userInfo;
@@ -15,13 +20,19 @@ const ProfileCard = () => {
   const [form] = Form.useForm();
 
   const handleUpdate = (values) => {
-    dispatch(update({ ...values, access_token, user_id }));
+    mutate({ ...values, access_token, user_id });
   };
 
   const handleLogout = () => {
+    Cookie.remove("userInfo");
     dispatch(logout());
     navigate("/");
   };
+
+  useEffect(() => {
+    Cookie.set("userInfo", JSON.stringify(userInfo));
+  }, [userInfo]);
+
   return (
     <Form
       onFinish={handleUpdate}
@@ -45,7 +56,7 @@ const ProfileCard = () => {
         hasFeedback
       >
         <Input placeholder={username} />
-      </Form.Item> 
+      </Form.Item>
       <Form.Item
         name="password"
         label="Password"
@@ -115,9 +126,20 @@ const ProfileCard = () => {
         <Input placeholder={tel} />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" className="login-form__button">
-          Submit
-        </Button>
+        {isLoading ? (
+          <Button
+            type="primary"
+            className="login-form__button"
+            htmlType="submit"
+            loading
+          >
+            Create your account
+          </Button>
+        ) : (
+          <Button type="primary" htmlType="submit" className="login-form__button">
+            Submit
+          </Button>
+        )}
 
         <Button
           type="danger"
@@ -127,6 +149,26 @@ const ProfileCard = () => {
         >
           Log out
         </Button>
+        {!isSuccess ? (
+          <></>
+        ) : (
+          <div className="login-form__success-wrap">
+            <h3 className="login-form__success-title">
+              update succeed !
+            </h3>
+          </div>
+        )}
+        {!isError ? (
+          <></>
+        ) : (
+          <div className="login-form__error-wrap">
+            <h3 className="login-form__error-title">
+              <WarningOutlined className="site-form-item-icon" />
+              {"  "}There was a problem
+            </h3>
+            <p className="login-form__error-message">{error.response.data.detail}</p>
+          </div>
+        )}
       </Form.Item>
     </Form>
   );

@@ -1,15 +1,11 @@
 import { useState } from "react";
 import { Row, Col, Select, Skeleton } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
-import { useSelector } from "react-redux";
 import AddToCart from "./AddToCart"
-import { selectIsLoading } from "../redux/productsSlice";
 
 const { Option } = Select;
 
-function ProductDetail({ product }) {
+function ProductDetail({ product, isLoading }) {
    const [qty, setQty] = useState(product.countInStock > 0 ? 1 : 0);
-   const isLoading = useSelector(selectIsLoading);
 
    return (
       <Row gutter={[32, 32]}>

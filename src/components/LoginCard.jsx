@@ -3,31 +3,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Checkbox } from 'antd';
 import { WarningOutlined, MailOutlined, LockOutlined } from '@ant-design/icons';
-import { login, remember } from "../redux/usersSlice";
-import { selectUserInfo, selectIsLoading, selectError, selectIsRemember } from "../redux/usersSlice";
+import Cookie from "js-cookie"
+
+import { remember } from "../redux/usersSlice";
+import { useSignInWithEmailPassword } from "../react-query";
+import { selectIsRemember } from "../redux/usersSlice";
 
 const LoginCard = ({ redirect }) => {
-  const userInfo = useSelector(selectUserInfo);
-  const isLoading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
+
+  const { mutate, error, isLoading, isError, isSuccess, data } = useSignInWithEmailPassword();
   const isRemember = useSelector(selectIsRemember);
-
   const dispatch = useDispatch();
-
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  // const onFinishFailed = () => {
-  //   console.log("Failed: ", error);
-  // };
-
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);
-    try {
-      await dispatch(login(values));
-    } catch (e) {
-      console.log(e)
-    }
+    mutate(values);
   };
 
   const onChange = (e) => {
@@ -35,8 +27,11 @@ const LoginCard = ({ redirect }) => {
   };
 
   useEffect(() => {
-    if (userInfo) navigate(redirect);
-  }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (isSuccess) {
+      Cookie.set("userInfo", JSON.stringify(data.data));
+      navigate(redirect);
+    }
+  }, [isSuccess, redirect]); 
 
   return (
     <Form
@@ -116,7 +111,7 @@ const LoginCard = ({ redirect }) => {
           </Button>
         )}
         Or <Link to={`/auth/register?redirect=${redirect}`}>register now!</Link>
-        { !error ? (
+        { !isError ? (
           <></>
         ) : (
           <div className="login-form__error-wrap">
@@ -124,11 +119,12 @@ const LoginCard = ({ redirect }) => {
               <WarningOutlined className="site-form-item-icon" />
               {"  "}There was a problem
             </h3>
-            <p className="login-form__error-message">{error}</p>
+            <p className="login-form__error-message">{error.response.data.detail}</p>
           </div>
         )}
       </Form.Item>
     </Form>
   );
-};;
+};
+
 export default LoginCard;

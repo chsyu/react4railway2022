@@ -1,6 +1,7 @@
 import { Modal, Button, Select } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
 import { CartIcon } from "./Icons";
 import { addCartItems, removeCartItems } from "../redux/cartSlice";
 import { selectCartItems } from "../redux/cartSlice";
@@ -20,8 +21,9 @@ export default function CartModal({ isModalVisible, toggleModal }) {
 
    const checkoutHandler = () => {
       handleCancel();
-      navigate("/login?redirect=shipping");
+      navigate("/auth/login?redirect=shipping");
     };
+
 
    return (
       <Modal
