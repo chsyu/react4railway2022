@@ -6,6 +6,7 @@ export default function ProductItem({ product }) {
         <Card className="bg-gray product">
             <Link to={`/products/id/${product.id}`}>
                 <img
+                    loading="lazy"
                     style={{ width: '100%' }}
                     src={product.image}
                     alt={product.name} />
